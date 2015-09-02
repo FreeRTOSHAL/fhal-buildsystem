@@ -1,6 +1,5 @@
 source arch/Kconfig
 source mach/Kconfig
-source board/Kconfig
 source driver/Kconfig
 source freertos/Kconfig
 menu "Compiler Settings"
