@@ -1,0 +1,40 @@
+source arch/Kconfig
+source mach/Kconfig
+source board/Kconfig
+source driver/Kconfig
+source freertos/Kconfig
+menu "Compiler Settings"
+config CROSS_COMPILE
+	string "Cross-compiler tool prefix"
+	help
+	  Same as running 'make CROSS_COMPILE=prefix-' but stored for
+	  default make runs in this kernel build directory.  You don't
+	  need to set this unless you want the configured kernel build
+	  directory to select the cross-compiler automatically.
+config EXTRA_AFLAGS
+	string "Extra AFLAGS"
+	help
+	  Same as running 'make EXTRA_AFLAGS=' but stoted for default make runs in this kernel build directory. 
+	  You don't need to set this unless you want the configured kernel build dictory to select the cross-compiler
+	  automaticlly. 
+config EXTRA_CFLAGS
+	string "Extra CFLAGS"
+	help
+	  Same as running 'make EXTRA_AFLAGS=' but stoted for default make runs in this kernel build directory. 
+	  You don't need to set this unless you want the configured kernel build dictory to select the cross-compiler
+	  automaticlly. 
+config EXTRA_CPPFLAGS
+	string "Extra CPPFLAGS"
+	help
+	  Same as running 'make EXTRA_AFLAGS=' but stoted for default make runs in this kernel build directory. 
+	  You don't need to set this unless you want the configured kernel build dictory to select the cross-compiler
+	  automaticlly. 
+config EXTRA_LDFLAGS
+	string "Extra LDFLAGS"
+	help
+	  Same as running 'make EXTRA_AFLAGS=' but stoted for default make runs in this kernel build directory. 
+	  You don't need to set this unless you want the configured kernel build dictory to select the cross-compiler
+	  automaticlly. 
+endmenu
+
+
