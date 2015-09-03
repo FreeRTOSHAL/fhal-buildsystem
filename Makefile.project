@@ -99,7 +99,7 @@ VPATH		:= $(srctree)
 export srctree objtree VPATH
 
 CROSS_COMPILE	+= $(CONFIG_CROSS_COMPILE:"%"=%)
-EXTRA_INCLUDE += $(subst $\",,$(CONFIG_ARCH_INCLUDE))
+EXTRA_INCLUDE += $(subst $\",,$(CONFIG_ARCH_INCLUDE)) $(subst $\",,$(CONFIG_MACH_INCLUDE))
 EXTRA_AFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_AFLAGS)) $(subst $\",,$(CONFIG_ARCH_AFLAGS)) \
 		   $(EXTRA_INCLUDE)
 EXTRA_CFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CFLAGS)) $(subst $\",,$(CONFIG_ARCH_CFLAGS)) \
@@ -363,7 +363,7 @@ $(PROJECT_NAME)-all	:= $($(PROJECT_NAME)-objs) $($(PROJECT_NAME)-libs)
 # Do modpost on a prelinked vmlinux. The finally linked vmlinux has
 # relevant sections renamed as per the linker script.
 quiet_cmd_$(PROJECT_NAME) = LD      $@
-      cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) -T $(CONFIG_BOARD_LD_SCRIPT) -o $@ \
+      cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) -T $(CONFIG_MACH_LD_SCRIPT) -o $@ \
       -Wl,--start-group $($(PROJECT_NAME)-libs) $($(PROJECT_NAME)-objs) -Wl,--end-group
 
 $(PROJECT_NAME): $($(PROJECT_NAME)-all)
