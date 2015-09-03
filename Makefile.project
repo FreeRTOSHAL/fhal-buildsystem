@@ -352,7 +352,7 @@ endif # $(dot-config)
 # command line.
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
-all: $(PROJECT_NAME)
+all: $(PROJECT_NAME) $(PROJECT_NAME).bin
 
 $(PROJECT_NAME)-dirs	:= $(objs-y) $(libs-y)
 $(PROJECT_NAME)-objs	:= $(patsubst %,%/built-in.o, $(objs-y))
@@ -365,9 +365,13 @@ $(PROJECT_NAME)-all	:= $($(PROJECT_NAME)-objs) $($(PROJECT_NAME)-libs)
 quiet_cmd_$(PROJECT_NAME) = LD      $@
       cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) -T $(CONFIG_MACH_LD_SCRIPT) -o $@ \
       -Wl,--start-group $($(PROJECT_NAME)-libs) $($(PROJECT_NAME)-objs) -Wl,--end-group
+quiet_cmd_$(PROJECT_NAME).bin = OBJCOPY $@
+      cmd_$(PROJECT_NAME).bin = $(OBJCOPY) -O binary $^ $@
 
 $(PROJECT_NAME): $($(PROJECT_NAME)-all)
 	$(call if_changed,$(PROJECT_NAME))
+$(PROJECT_NAME).bin: $(PROJECT_NAME)
+	$(call if_changed,$(PROJECT_NAME).bin)
 
 # The actual objects are generated when descending, 
 # make sure no implicit rule kicks in
@@ -395,7 +399,7 @@ $($(PROJECT_NAME)-dirs): scripts_basic
 
 # Directories & files removed with 'make clean'
 CLEAN_DIRS  +=
-CLEAN_FILES +=	$(PROJECT_NAME)
+CLEAN_FILES +=	$(PROJECT_NAME) $(PROJECT_NAME).bin
 
 # Directories & files removed with 'make mrproper'
 MRPROPER_DIRS  += include/config include/generated
