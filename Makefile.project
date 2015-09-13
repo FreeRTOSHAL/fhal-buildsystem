@@ -363,14 +363,21 @@ $(PROJECT_NAME)-all	:= $($(PROJECT_NAME)-objs) $($(PROJECT_NAME)-libs)
 # Do modpost on a prelinked vmlinux. The finally linked vmlinux has
 # relevant sections renamed as per the linker script.
 quiet_cmd_$(PROJECT_NAME) = LD      $@
-ifdef CONFIG_NEWLIB_MALLOC
-      cmd_$(PROJECT_NAME) = $(CC) -Wl,--wrap,__malloc_lock,--wrap,__malloc_unlock $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) -T $(CONFIG_MACH_LD_SCRIPT) -o $@ \
-	      -Wl,--start-group $($(PROJECT_NAME)-libs) $($(PROJECT_NAME)-objs) -Wl,--end-group
+
+EXTRA_LINKFLAGS += $(subst $\",,$(CONFIG_EXTRA_ARCH_LINKFLAGS)) $(subst $\",,$(CONFIG_EXTRA_MACH_LINKFLAGS))
+ifdef CONFIG_MACH_LD_SCRIPT
+EXTRA_LINKFLAGS += -T $(CONFIG_MACH_LD_SCRIPT:"%"=%)
 endif
-ifndef CONFIG_NEWLIB_MALLOC
-      cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) -T $(CONFIG_MACH_LD_SCRIPT) -o $@ \
-	      -Wl,--start-group $($(PROJECT_NAME)-libs) $($(PROJECT_NAME)-objs) -Wl,--end-group
+ifdef CONFIG_NEWLIB_MALLOC_THREAD_SAFE
+EXTRA_LINKFLAGS += -Wl,--wrap,__malloc_lock,--wrap,__malloc_unlock
 endif
+ifdef CONFIG_MACH_LIBS
+EXTRA_LIBS += $(subst $\",,$(CONFIG_MACH_LIBS))
+endif
+
+cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) $(EXTRA_LINKFLAGS) -o $@ \
+      -Wl,--start-group $($(PROJECT_NAME)-libs) $($(PROJECT_NAME)-objs) -Wl,--end-group $(EXTRA_LIBS)
+
 quiet_cmd_$(PROJECT_NAME).bin = OBJCOPY $@
       cmd_$(PROJECT_NAME).bin = $(OBJCOPY) -O binary $^ $@
 
