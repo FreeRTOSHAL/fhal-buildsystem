@@ -196,6 +196,7 @@ AFLAGS_KERNEL	=
 # Needed to be compatible with the O= option
 LINUXINCLUDE    := -Iinclude \
 		   -Idriver/include \
+		   -Imach/include \
                    $(if $(KBUILD_SRC), -I$(srctree)/include) \
                    -include include/generated/autoconf.h \
 		   -Ifreertos/include/
@@ -216,7 +217,8 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_CFLAGS   := -Wall -Wundef -Wno-trigraphs \
 		   -fstrict-aliasing -Wstrict-aliasing=3 -fno-common \
 		   -Werror-implicit-function-declaration \
-		   -fno-delete-null-pointer-checks -std=gnu99
+		   -fno-delete-null-pointer-checks -std=gnu99 \
+		   -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
