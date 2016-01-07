@@ -99,7 +99,7 @@ VPATH		:= $(srctree)
 export srctree objtree VPATH
 
 CROSS_COMPILE	+= $(CONFIG_CROSS_COMPILE:"%"=%)
-EXTRA_INCLUDE += $(subst $\",,$(CONFIG_ARCH_INCLUDE)) $(subst $\",,$(CONFIG_MACH_INCLUDE))
+EXTRA_INCLUDE += $(subst $\",,$(CONFIG_ARCH_INCLUDE)) $(subst $\",,$(CONFIG_MACH_INCLUDE)) $(subst $\",,$(CONFIG_APP_INCLUDE))
 EXTRA_AFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_AFLAGS)) $(subst $\",,$(CONFIG_ARCH_AFLAGS)) \
 		   $(EXTRA_INCLUDE)
 EXTRA_CFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CFLAGS)) $(subst $\",,$(CONFIG_ARCH_CFLAGS)) \
@@ -378,7 +378,10 @@ ifdef CONFIG_NEWLIB_MALLOC_THREAD_SAFE
 EXTRA_LINKFLAGS += -Wl,--wrap,__malloc_lock,--wrap,__malloc_unlock
 endif
 ifdef CONFIG_MACH_LIBS
-EXTRA_LIBS += $(subst $\",,$(CONFIG_MACH_LIBS))
+EXTRA_LIBS += $(subst $\",,$(CONFIG_MACH_LIBS)) $(subst $\",,$(CONFIG_APP_LIBS))
+endif
+ifdef CONFIG_APP_LIBS
+EXTRA_LIBS += $(subst $\",,$(CONFIG_APP_LIBS))
 endif
 
 cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) $(EXTRA_LINKFLAGS) -o $@ \
