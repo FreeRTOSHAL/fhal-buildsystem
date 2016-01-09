@@ -106,7 +106,7 @@ EXTRA_CFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CFLAGS)) $(subst $\",,$(CONFIG_ARCH_
 		   $(EXTRA_INCLUDE)
 EXTRA_CPPFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CPPFLAGS)) $(subst $\",,$(CONFIG_ARCH_CPPFLAGS)) \
 		   $(EXTRA_INCLUDE)
-EXTRA_LDFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_LDFLAGS)) $(subst $\",,$(CONFIG_ARCH_LDFLAGS))
+EXTRA_LDFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_LDFLAGS)) $(subst $\",,$(CONFIG_ARCH_LDFLAGS)) $(subst $\",,$(CONFIG_APP_LDFLAGS))
 
 
 
