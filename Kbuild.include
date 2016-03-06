@@ -246,6 +246,13 @@ make-cmd = $(call escsq,$(subst \#,\\\#,$(subst $$,$$$$,$(cmd_$(1)))))
 # PHONY targets skipped in both cases.
 any-prereq = $(filter-out $(PHONY),$?) $(filter-out $(PHONY) $(wildcard $^),$^)
 
+# replace Windwos Path to Cygwin Path TODO detekt witch drive
+winfix = if [ -f $(depfile) ]; then \
+		cat $(depfile) | sed -r -e "s*([a-zA-Z0-9])\\\*\1/*g" -e "s*c:(\\\)(\\\)*/cygdrive/c/*g" > $(depfile).tmp; \
+		cp $(depfile).tmp $(depfile); \
+		rm -f $(depfile).tmp; \
+	fi
+
 # Execute command if command has changed or prerequisite(s) are updated.
 #
 if_changed = $(if $(strip $(any-prereq) $(arg-check)),                       \
@@ -257,6 +264,7 @@ if_changed = $(if $(strip $(any-prereq) $(arg-check)),                       \
 if_changed_dep = $(if $(strip $(any-prereq) $(arg-check) ),                  \
 	@set -e;                                                             \
 	$(echo-cmd) $(cmd_$(1));                                             \
+	$(winfix);                                                           \
 	scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).tmp;\
 	rm -f $(depfile);                                                    \
 	mv -f $(dot-target).tmp $(dot-target).cmd)
