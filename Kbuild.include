@@ -248,7 +248,7 @@ any-prereq = $(filter-out $(PHONY),$?) $(filter-out $(PHONY) $(wildcard $^),$^)
 
 # replace Windwos Path to Cygwin Path TODO detekt witch drive
 winfix = if [ -f $(depfile) ]; then \
-		cat $(depfile) | sed -r -e "s*([a-zA-Z0-9])\\\*\1/*g" -e "s*c:(\\\)(\\\)*/cygdrive/c/*g" > $(depfile).tmp; \
+		cat $(depfile) | sed -r -e "s*([a-zA-Z0-9])\\\*\1/*g" -e "s*c:(\\\)*/cygdrive/c/*g" > $(depfile).tmp; \
 		cp $(depfile).tmp $(depfile); \
 		rm -f $(depfile).tmp; \
 	fi
