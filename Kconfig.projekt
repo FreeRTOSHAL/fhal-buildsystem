@@ -10,6 +10,26 @@ config CROSS_COMPILE
 	  default make runs in this kernel build directory.  You don't
 	  need to set this unless you want the configured kernel build
 	  directory to select the cross-compiler automatically.
+config DEBUG
+	bool "Add Debuging"
+	default n
+	help
+		Add Debuging Option
+choice
+	prompt "Optimization Option"
+	config OPTIMIZATION_O0
+		bool "Disable Optimization"
+	config OPTIMIZATION_O1
+		bool "Optimization(-O1)"
+	config OPTIMIZATION_O2
+		bool "Optimization(-O2)"
+	config OPTIMIZATION_O3
+		bool "Optimization(-O3)"
+	config OPTIMIZATION_Ofast
+		bool "Optimization(-Ofast) for Fast Execution"
+	config OPTIMIZATION_Os
+		bool "Optimization(-Os) for size"
+endchoice
 config EXTRA_AFLAGS
 	string "Extra AFLAGS"
 	help
