@@ -441,6 +441,12 @@ ifdef CONFIG_APP_LIBS
 EXTRA_LIBS += $(subst $\",,$(CONFIG_APP_LIBS))
 endif
 
+ifdef CONFIG_NLIBC
+#KBUILD_CFLAGS += -nostdinc -I$(srctree)/driver/nlibc/include/
+EXTRA_LINKFLAGS += -nostdlib
+EXTRA_LIBS += -lgcc
+endif
+
 ifdef CONFIG_OPTIMIZATION_O0
 KBUILD_CFLAGS += -O0
 endif
