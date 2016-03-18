@@ -30,6 +30,13 @@ choice
 	config OPTIMIZATION_Os
 		bool "Optimization(-Os) for size"
 endchoice
+config REMOVE_UNUSED_SECTIONS
+	bool "Remove Unused Symbols"
+	default n
+	help
+		Remove Unused Symbols to reduce bin size
+
+		-fdata-sections -ffunction-sections and -Wl,--gc-sections is in used
 config EXTRA_AFLAGS
 	string "Extra AFLAGS"
 	help

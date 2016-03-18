@@ -469,6 +469,10 @@ ifdef CONFIG_DEBUG
 KBUILD_CFLAGS += -g
 endif
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0500, -fno-toplevel-reorder)
+ifdef CONFIG_REMOVE_UNUSED_SECTIONS
+KBUILD_CLFAGS += -fdata-sections -ffunction-sections
+EXTRA_LINKFLAGS += -Wl,--gc-sections
+endif
 
 quiet_cmd_$(PROJECT_NAME) = LD      $@
 cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) $(EXTRA_LINKFLAGS) -o $@ \
