@@ -492,7 +492,7 @@ KBUILD_CFLAGS += -g
 endif
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0500, -fno-toplevel-reorder)
 ifdef CONFIG_REMOVE_UNUSED_SECTIONS
-KBUILD_CLFAGS += -fdata-sections -ffunction-sections
+KBUILD_CFLAGS += -fdata-sections -ffunction-sections
 EXTRA_LINKFLAGS += -Wl,--gc-sections
 endif
 
