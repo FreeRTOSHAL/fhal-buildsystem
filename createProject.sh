@@ -100,9 +100,9 @@ cat << EOF > src/${1}.c
 int main() {
 	int32_t ret;
 #ifdef CONFIG_UART
-# ifdef CONFIG_MACH_VF610
+# if defined(CONFIG_MACH_VF610)
 	struct uart *uart = uart_init(LPUART1_ID, 115200);
-# elif CONFIG_MACH_STM32
+# elif defined(CONFIG_MACH_STM32)
 	struct uart *uart = uart_init(UART2_ID, 115200);
 # else
 #  error "uart for this mach not implement"
@@ -148,4 +148,6 @@ echo "Call make to build the System for x86"
 echo "or call make <config name>_defconfig to change the system"
 echo ""
 echo "Following configs are available:"
-ls configs/
+pushd configs &> /dev/null
+ls *_defconfig
+popd configs &> /dev/null
