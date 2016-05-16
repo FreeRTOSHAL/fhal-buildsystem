@@ -18,7 +18,7 @@ function addRepo() {
 	checkError
 }
 
-REPRO=git@scuderia.cs.hs-rm.de:fhal
+REPRO=https://github.com/FreeRTOSHAL/
 PREFIX=fhal-
 BRANCH=master
 
