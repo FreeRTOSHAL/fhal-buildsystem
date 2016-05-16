@@ -11,6 +11,13 @@ function checkError() {
 	fi
 }
 
+function addRepo() {
+	subrepo=$1
+	folder=$2
+	git submodule add $REPRO/${PREFIX}${subrepo} ${folder}
+	checkError
+}
+
 REPRO=git@scuderia.cs.hs-rm.de:fhal
 PREFIX=fhal-
 BRANCH=master
@@ -33,21 +40,20 @@ if [ ! -z "$3" ]; then
 	REPRO=$3
 fi
 
+if [ -e driver -o -e arch -o -e mach -o -e scripts -o -e freertos ]; then
+	echo "folder must be empty!"
+	exit 1
+fi
+
 git init
 checkError
 git submodule init
 checkError
-#mkdir driver mach arch scripts src include
-git submodule add $REPRO/${PREFIX}driver driver
-checkError
-git submodule add $REPRO/${PREFIX}arch arch
-checkError
-git submodule add $REPRO/${PREFIX}mach mach
-checkError
-git submodule add $REPRO/${PREFIX}buildsystem scripts
-checkError
-git submodule add $REPRO/${PREFIX}kernel freertos
-checkError
+addRepo driver driver
+addRepo arch arch
+addRepo mach mach
+addRepo buildsystem scripts
+addRepo kernel freertos
 
 git submodule foreach git checkout $BRANCH
 checkError
@@ -84,53 +90,36 @@ cat << EOF > src/${1}.c
 
 #include <FreeRTOS.h>
 #include <task.h>
+#ifndef CONFIG_ARCH_X86_LINUX
 /* Include Unique Dev Names */
-#include <devs.h>
+# include <devs.h>
+#endif
 #include <uart.h>
 #include <newlib_stub.h>
 
 int main() {
 	int32_t ret;
+#ifdef CONFIG_UART
+# ifdef CONFIG_MACH_VF610
 	struct uart *uart = uart_init(LPUART1_ID, 115200);
+# elif CONFIG_MACH_STM32
+	struct uart *uart = uart_init(UART2_ID, 115200);
+# else
+#  error "uart for this mach not implement"
+# endif
 	CONFIG_ASSERT(uart != NULL);
+# ifdef CONFIG_NEWLIB_UART
 	ret = newlib_init(uart, uart);
 	CONFIG_ASSERT(ret == 0);
+# endif
+#endif
 	printf("Start Scheduler\n");
-	vTaskStartScheduler ();
+	vTaskStartScheduler();
 	for(;;);
 	return 0;
 }
 EOF
-cat << EOF > .config
-CONFIG_ARCH_ARM=y
-CONFIG_CPU_CLOCK_BY_INTERFACE=y
-CONFIG_ARCH_ARM_CORTEX_M4F=y
 
-CONFIG_MACH_VF610=y
-CONFIG_VF610_UART=y
-CONFIG_VF610_LPUART=y
-CONFIG_VF610_LPUART01=y
-CONFIG_BUFFER_UART=y
-CONFIG_BUFFER_UART_WAIT_TO_TX=y
-CONFIG_BUFFER_UART_MAX_TRYS=50
-CONFIG_VF610_BUFFER=y
-CONFIG_VF610_BUFFER_1=y
-
-CONFIG_UART=y
-CONFIG_UART_MULTI=y
-
-CONFIG_NEWLIB=y
-CONFIG_NEWLIB_UART=y
-CONFIG_NEWLIB_UART_NEWLINE=y
-CONFIG_NEWLIB_MALLOC=y
-CONFIG_NEWLIB_MALLOC_THREAD_SAFE=y
-CONFIG_MALLOC_3=y
-
-CONFIG_BUFFER=y
-
-CONFIG_HEAP_3=y
-CONFIG_CROSS_COMPILE="arm-none-eabi-"
-EOF
 cat << EOF > .gitignore
 **.cmd
 **.o
@@ -143,23 +132,20 @@ $1
 ${1}.bin
 EOF
 
-cat << EOF > configs/README.md
+# Copy default configs
+cp scripts/configs/* configs/
 
-"This folder shall contais configs for build mutilbile targets
+git add arch/ mach/ freertos/ driver/ scripts/ Kconfig Makefile src/${1}.c src/Kconfig src/Makefile configs/* .gitignore
 
-all configs shall the postfix _defconfig
-
-call this command to init config: 
-
-make <config_name>_defconfig
-EOF
-
-git add arch/ mach/ freertos/ driver/ scripts/ Kconfig Makefile src/${1}.c src/Kconfig src/Makefile configs/README.md .gitignore
-make olddefconfig
+make x86_defconfig
 
 
 echo ""
 
 echo "You can now use the buildsystem"
-
-echo "Call make to build the System"
+echo ""
+echo "Call make to build the System for x86"
+echo "or call make <config name>_defconfig to change the system"
+echo ""
+echo "Following configs are available:"
+ls configs/
