@@ -37,6 +37,13 @@ config REMOVE_UNUSED_SECTIONS
 		Remove Unused Symbols to reduce bin size
 
 		-fdata-sections -ffunction-sections and -Wl,--gc-sections is in used
+config USER_ERROR_FUNCTION
+	bool "User Error Function"
+	default n
+	help
+		User Error Function Callaed in HW Error and CONFIG_ASSERT
+
+		void userErrorHandler();
 config EXTRA_AFLAGS
 	string "Extra AFLAGS"
 	help
