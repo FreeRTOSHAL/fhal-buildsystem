@@ -267,7 +267,7 @@ KBUILD_CFLAGS := -Wall -Wundef -Wno-trigraphs \
 		 -fstrict-aliasing -Wstrict-aliasing=3 -fno-common \
 		 -Werror-implicit-function-declaration \
 		 -fno-delete-null-pointer-checks -std=gnu99 \
-		 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
+		 -fno-exceptions
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__ 
 export ARCH SRCARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
@@ -494,6 +494,11 @@ KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0500, -fno-toplevel-reorder)
 ifdef CONFIG_REMOVE_UNUSED_SECTIONS
 KBUILD_CFLAGS += -fdata-sections -ffunction-sections
 EXTRA_LINKFLAGS += -Wl,--gc-sections
+endif
+ifdef CONFIG_GENERATE_UNWIND_TABLES
+EXTRA_CFLAGS += -funwind-tables
+else
+EXTRA_CFLAGS += -fno-unwind-tables -fno-asynchronous-unwind-tables
 endif
 
 quiet_cmd_$(PROJECT_NAME) = LD      $@

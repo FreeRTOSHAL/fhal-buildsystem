@@ -15,6 +15,12 @@ config DEBUG
 	default n
 	help
 		Add Debuging Option
+	config GENERATE_UNWIND_TABLES
+		bool "Generate Unwind Tables"
+		depends on ARCH_SUPPORT_UNWIND_TABLES
+		default n
+		help
+			Generate Unwind Tables for Backtrace
 choice
 	prompt "Optimization Option"
 	config OPTIMIZATION_O0
