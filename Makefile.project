@@ -488,7 +488,7 @@ ifdef CONFIG_OPTIMIZATION_Ofast
 KBUILD_CFLAGS += -Ofast
 endif
 ifdef CONFIG_DEBUG
-KBUILD_CFLAGS += -g
+KBUILD_CFLAGS += $(call cc-option,-g3,-g)
 endif
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0500, -fno-toplevel-reorder)
 ifdef CONFIG_REMOVE_UNUSED_SECTIONS
