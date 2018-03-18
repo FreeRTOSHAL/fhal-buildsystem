@@ -50,7 +50,7 @@ CONFIG_MACH_HAS_SPI=y
 CONFIG_MACH_HAS_TIMER=y
 
 #
-# Ti STM32 Settings
+# ST STM32 Settings
 #
 CONFIG_STM32_F4=y
 # CONFIG_STM32F40_41xxx is not set
@@ -98,7 +98,7 @@ CONFIG_MACH_HAS_SDIO=y
 #
 # PLL Settings
 #
-# CONFIG_EXTERNEL_OSCILLATOR is not set
+# CONFIG_EXTERNAL_OSCILLATOR is not set
 
 #
 # Periphery Setting
