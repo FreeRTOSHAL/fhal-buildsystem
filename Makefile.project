@@ -244,16 +244,18 @@ AFLAGS_KERNEL	=
 # Parse Extra Options config by ARCH MACH and APP
 EXTRA_INCLUDE += $(subst $\",,$(CONFIG_ARCH_INCLUDE)) $(subst $\",,$(CONFIG_MACH_INCLUDE)) $(subst $\",,$(CONFIG_APP_INCLUDE))
 EXTRA_AFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_AFLAGS)) $(subst $\",,$(CONFIG_ARCH_AFLAGS)) \
-		   $(EXTRA_INCLUDE)
+		   $(subst $\",,$(CONFIG_MACH_AFLAGS)) $(EXTRA_INCLUDE)
 EXTRA_CFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CFLAGS)) $(subst $\",,$(CONFIG_ARCH_CFLAGS)) \
-		   $(EXTRA_INCLUDE)
+		   $(subst $\",,$(CONFIG_MACH_CFLAGS)) $(EXTRA_INCLUDE)
 EXTRA_CPPFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_CPPFLAGS)) $(subst $\",,$(CONFIG_ARCH_CPPFLAGS)) \
-		   $(EXTRA_INCLUDE)
-EXTRA_LDFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_LDFLAGS)) $(subst $\",,$(CONFIG_ARCH_LDFLAGS)) $(subst $\",,$(CONFIG_APP_LDFLAGS))
+		   $(subst $\",,$(CONFIG_MACH_CPPFLAGS)) $(EXTRA_INCLUDE)
+EXTRA_LDFLAGS	+= $(subst $\",,$(CONFIG_EXTRA_LDFLAGS)) $(subst $\",,$(CONFIG_ARCH_LDFLAGS)) $(subst $\",,$(CONFIG_APP_LDFLAGS)) \
+		   $(subst $\",,$(CONFIG_MACH_LDFLAGS))
 
 CFLAGS_KERNEL += $(EXTRA_CFLAGS)
 CPPFLAGS_KERNEL += $(EXTRA_CPPFLAGS)
 AFLAGS_KERNEL += $(EXTRA_AFLAGS)
+LDFLAGS_KERNEL += $(EXTRA_LDFLAGS)
 
 INCLUDES := -I$(srctree)/include \
 	   -I$(srctree)/driver/include \
