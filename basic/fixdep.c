@@ -273,7 +273,8 @@ static void *read_file(const char *filename)
 	if (fd < 0) {
 		fprintf(stderr, "fixdep: error opening file: ");
 		perror(filename);
-		exit(2);
+		//exit(2);
+		return NULL;
 	}
 	if (fstat(fd, &st) < 0) {
 		fprintf(stderr, "fixdep: error fstat'ing file: ");
@@ -365,8 +366,10 @@ static void parse_dep_file(char *m, const char *target)
 			}
 
 			buf = read_file(m);
-			parse_config_file(buf);
-			free(buf);
+			if (buf != NULL) {
+				parse_config_file(buf);
+				free(buf);
+			}
 		}
 
 		if (is_last)
