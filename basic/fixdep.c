@@ -268,11 +268,15 @@ static void *read_file(const char *filename)
 	struct stat st;
 	int fd;
 	char *buf;
-
+#ifdef __MINGW32__
+	fd = open(filename, O_RDONLY | O_BINARY);
+#else
 	fd = open(filename, O_RDONLY);
+#endif
 	if (fd < 0) {
-		fprintf(stderr, "fixdep: error opening file: ");
-		perror(filename);
+		// Error is ignored
+		//fprintf(stderr, "fixdep: error opening file: \n");
+		//perror(filename);
 		//exit(2);
 		return NULL;
 	}
@@ -406,6 +410,11 @@ int main(int argc, char *argv[])
 	xprintf("cmd_%s := %s\n\n", target, cmdline);
 
 	buf = read_file(depfile);
+	if (buf == NULL) {
+		fprintf(stderr, "fixdep: error opening file: ");
+		perror("open\n");
+		exit(1);
+	}
 	parse_dep_file(buf, target);
 	free(buf);
 
