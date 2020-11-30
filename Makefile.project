@@ -242,16 +242,16 @@ LDFLAGS_KERNEL += $(EXTRA_LDFLAGS)
 INCLUDES := -I$(srctree)/include \
 	   -I$(srctree)/driver/include \
 	   -I$(srctree)/mach/include \
-           -include $(srctree)/include/generated/autoconf.h \
+	   -include $(srctree)/include/generated/autoconf.h \
 	   -I$(srctree)/freertos/include/
 LINUXINCLUDE := $(INCLUDES)
 CFLAGS_KERNEL += $(INCLUDES)
 
-KBUILD_CFLAGS := -Wall -Wundef -Wno-trigraphs \
-		 -fstrict-aliasing -Wstrict-aliasing=3 -fno-common \
-		 -Werror-implicit-function-declaration \
-		 -fno-delete-null-pointer-checks -std=gnu99 \
-		 -fno-exceptions
+KBUILD_CFLAGS := $(cc-option, -Wall,) $(cc-option, -Wundef) $(cc-option, -Wno-trigraphs) \
+		 $(cc-option, -fstrict-aliasing) $(cc-option, -Wstrict-aliasing=3) $(cc-option, -fno-common) \
+		 $(cc-option, -Werror-implicit-function-declaration)\
+		 $(cc-option, -fno-delete-null-pointer-checks  $(cc-option, -std=gnu99) \
+		 $(cc-option, -fno-exceptions)
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__ 
 export ARCH SRCARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
@@ -481,9 +481,9 @@ KBUILD_CFLAGS += -fdata-sections -ffunction-sections
 EXTRA_LINKFLAGS += -Wl,--gc-sections
 endif
 ifdef CONFIG_GENERATE_UNWIND_TABLES
-EXTRA_CFLAGS += -funwind-tables
+EXTRA_CFLAGS += $(cc-option -funwind-tables)
 else
-EXTRA_CFLAGS += -fno-unwind-tables -fno-asynchronous-unwind-tables
+EXTRA_CFLAGS += $(cc-option -fno-unwind-tables) $(cc-option -fno-asynchronous-unwind-tables)
 endif
 
 quiet_cmd_$(PROJECT_NAME) = LD      $@
