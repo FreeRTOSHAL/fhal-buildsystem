@@ -45,8 +45,10 @@ if [ -e driver -o -e arch -o -e mach -o -e scripts -o -e freertos ]; then
 	exit 1
 fi
 
-git init
-checkError
+if [ ! -e .git ]; then
+	git init
+	checkError
+fi
 git submodule init
 checkError
 addRepo driver driver
