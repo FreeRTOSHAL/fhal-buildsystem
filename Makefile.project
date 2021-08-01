@@ -387,7 +387,10 @@ endif # $(dot-config)
 # command line.
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
-all: $(PROJECT_NAME) $(PROJECT_NAME).bin
+ifdef CONFIG_WITH_UBOOT_IMG
+IMG=$(PROJECT_NAME).img
+endif
+all: $(PROJECT_NAME) $(PROJECT_NAME).bin $(IMG)
 
 ifeq ($(cc-name),clang)
 #TODO check option of clang!!
@@ -493,10 +496,21 @@ cmd_$(PROJECT_NAME) = $(CC) $(EXTRA_LDFLAGS) $(EXTRA_CFLAGS) $(EXTRA_LINKFLAGS) 
 quiet_cmd_$(PROJECT_NAME).bin = OBJCOPY $@
       cmd_$(PROJECT_NAME).bin = $(OBJCOPY) -O binary $^ $@
 
+quiet_cmd_$(PROJECT_NAME).bin.gz = GZIP    $@
+      cmd_$(PROJECT_NAME).bin.gz = cp $^ tmp_$^; gzip -f -9 tmp_$^; mv tmp_$@ $@
+
+MKIMAGE:=$(notdir $(shell which mkimage))
+quiet_cmd_$(PROJECT_NAME).img = MKIMAGE $@
+      cmd_$(PROJECT_NAME).img = $(MKIMAGE) -A $(CONFIG_ELF_ARCH) -O linux -T kernel -a $(CONFIG_ELF_LOADADDR) -e $(CONFIG_ELF_LOADADDR) -n FreeRTOSHAL -d '$(basename $@).bin.gz' '$(basename $@).img'
+
 $(PROJECT_NAME): $($(PROJECT_NAME)-all) FORCE
 	$(call if_changed,$(PROJECT_NAME))
 $(PROJECT_NAME).bin: $(PROJECT_NAME)
 	$(call if_changed,$(PROJECT_NAME).bin)
+$(PROJECT_NAME).bin.gz: $(PROJECT_NAME).bin
+	$(call if_changed,$(PROJECT_NAME).bin.gz)
+$(PROJECT_NAME).img: $(PROJECT_NAME).bin.gz
+	$(call if_changed,$(PROJECT_NAME).img)
 CLEAN_FILES += $(PROJECT_NAME) $(PROJECT_NAME).bin
 
 # Include targets which we want to

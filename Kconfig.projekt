@@ -74,6 +74,14 @@ config EXTRA_LDFLAGS
 	  Same as running 'make EXTRA_AFLAGS=' but stoted for default make runs in this kernel build directory. 
 	  You don't need to set this unless you want the configured kernel build dictory to select the cross-compiler
 	  automaticlly. 
+config WITH_UBOOT_IMG
+	bool "Build U-Boot Image"
+if WITH_UBOOT_IMG=y
+	config ELF_ARCH
+		string "ELF Arch"
+	config ELF_LOADADDR
+		string "Load Address"
+endif
 endmenu
 
 
