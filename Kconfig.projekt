@@ -35,6 +35,8 @@ choice
 		bool "Optimization(-Ofast) for Fast Execution"
 	config OPTIMIZATION_Os
 		bool "Optimization(-Os) for size"
+	config OPTIMIZATION_Og
+		bool "Optimization(-Og) for Debug"
 endchoice
 config REMOVE_UNUSED_SECTIONS
 	bool "Remove Unused Symbols"

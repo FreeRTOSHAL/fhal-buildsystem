@@ -475,6 +475,9 @@ endif
 ifdef CONFIG_OPTIMIZATION_Ofast
 KBUILD_CFLAGS += -Ofast
 endif
+ifdef CONFIG_OPTIMIZATION_Og
+KBUILD_CFLAGS += -Og
+endif
 ifdef CONFIG_DEBUG
 KBUILD_CFLAGS += $(call cc-option,-g3,-g)
 endif
