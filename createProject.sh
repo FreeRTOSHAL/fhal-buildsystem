@@ -60,6 +60,9 @@ addRepo kernel freertos
 git submodule foreach git checkout $BRANCH
 checkError
 
+git submodule foreach git submodule update --init
+checkError
+
 mkdir src include configs
 
 cat << EOF > Makefile
@@ -80,7 +83,26 @@ source scripts/Kconfig.projekt
 source src/Kconfig
 EOF
 
-echo "" > src/Kconfig
+echo << EOF > src/Kconfig
+menu "Application Config"
+config APP_INCLUDE
+	string
+	default "-Iinclude"
+choice
+	prompt "stdout UART"
+	depends on UART
+	config USE_SEMIHOSTING_AS_STDOUT
+		bool "Semihosting UART"
+		depends on SEMIHOSTING_UART
+	config USE_SBI_AS_STDOUT
+		bool "SBI UART"
+		depends on ARCH_SBI
+	#config USE_UART0_AS_STDOUT
+	#	bool "Uart 0"
+	#	depends on ...
+endchoice
+endmenu
+EOF
 
 cat << EOF > src/Makefile
 obj-y = ${1}.o
@@ -98,20 +120,32 @@ cat << EOF > src/${1}.c
 #endif
 #include <uart.h>
 #include <newlib_stub.h>
+#ifdef CONFIG_USE_SEMIHOSTING_AS_STDOUT
+# include <semihosting.h>
+#endif
+#ifdef CONFIG_USE_SBI_AS_STDOUT
+# include <sbi_uart.h>
+#endif
 
 int main() {
 	int32_t ret;
 #ifdef CONFIG_UART
-# if defined(CONFIG_MACH_VF610)
-	struct uart *uart = uart_init(LPUART1_ID, 115200);
-# elif defined(CONFIG_MACH_STM32)
-	struct uart *uart = uart_init(UART2_ID, 115200);
+# if defined(CONFIG_USE_SEMIHOSTING_AS_STDOUT)
+	struct uart *uart = uart_init(SEMIHOSTING_UART_ID, 115200);
+# elif defined(CONFIG_USE_SBI_AS_STDOUT)
+	struct uart *uart = uart_init(SBI_UART_ID, 115200);
+# elif defined(USE_UART0_AS_STDOUT)
+	//struct uart *uart = uart_init(PUT_CORRECT_UART_HEAR_ID, 115200);
 # else
 #  error "uart for this mach not implement"
 # endif
 	CONFIG_ASSERT(uart != NULL);
 # ifdef CONFIG_NEWLIB_UART
 	ret = newlib_init(uart, uart);
+	CONFIG_ASSERT(ret == 0);
+# endif
+# ifdef CONFIG_NLIBC_PRINTF
+	ret = nlibc_init(uart, uart);
 	CONFIG_ASSERT(ret == 0);
 # endif
 #endif
