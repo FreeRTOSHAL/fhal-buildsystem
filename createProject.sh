@@ -83,7 +83,7 @@ source scripts/Kconfig.projekt
 source src/Kconfig
 EOF
 
-echo << EOF > src/Kconfig
+cat << EOF > src/Kconfig
 menu "Application Config"
 config APP_INCLUDE
 	string
