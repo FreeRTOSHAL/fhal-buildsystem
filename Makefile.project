@@ -247,11 +247,11 @@ INCLUDES := -I$(srctree)/include \
 LINUXINCLUDE := $(INCLUDES)
 CFLAGS_KERNEL += $(INCLUDES)
 
-KBUILD_CFLAGS := $(cc-option, -Wall,) $(cc-option, -Wundef) $(cc-option, -Wno-trigraphs) \
-		 $(cc-option, -fstrict-aliasing) $(cc-option, -Wstrict-aliasing=3) $(cc-option, -fno-common) \
-		 $(cc-option, -Werror-implicit-function-declaration)\
-		 $(cc-option, -fno-delete-null-pointer-checks  $(cc-option, -std=gnu99) \
-		 $(cc-option, -fno-exceptions)
+KBUILD_CFLAGS := $(call cc-option,-Wall) $(call cc-option, -Wundef) $(call cc-option, -Wno-trigraphs) \
+		 $(call cc-option, -fstrict-aliasing) $(call cc-option, -Wstrict-aliasing=3) $(call cc-option, -fno-common) \
+		 $(call cc-option, -Werror-implicit-function-declaration)\
+		 $(call cc-option, -fno-delete-null-pointer-checks)  $(call cc-option, -std=gnu99) \
+		 $(call cc-option, -fno-exceptions)
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__ 
 export ARCH SRCARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
@@ -487,9 +487,9 @@ KBUILD_CFLAGS += -fdata-sections -ffunction-sections
 EXTRA_LINKFLAGS += -Wl,--gc-sections
 endif
 ifdef CONFIG_GENERATE_UNWIND_TABLES
-EXTRA_CFLAGS += $(cc-option -funwind-tables)
+EXTRA_CFLAGS += $(call cc-option, -funwind-tables)
 else
-EXTRA_CFLAGS += $(cc-option -fno-unwind-tables) $(cc-option -fno-asynchronous-unwind-tables)
+EXTRA_CFLAGS += $(call cc-option, -fno-unwind-tables) $(call cc-option, -fno-asynchronous-unwind-tables)
 endif
 
 quiet_cmd_$(PROJECT_NAME) = LD      $@
